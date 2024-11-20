@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+  <title> My Test App </title>
+</head>
+
+<style>
+
+  
+</style>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/html">Link</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Dropdown
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/html">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+          </li>
+        </ul>
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <div id="flash-messages" style="display: none;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-message" data-category="{{ category }}" data-message="{{ message }}"></div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+  <div class="container my-3">
+    <H2> Add a Task</H2>
+
+    <form action="/html" method="post">
+      <div class="mb-5">
+        <label for="title" class="form-label">To-Do Title</label>
+        <input type="text" class="form-control" id="title" name="title" aria-describedby="emailHelp">
+      </div>
+      <div class="mb-3">
+        <label for="desc" class="form-label">To-Do Description</label>
+        <input type="text" class="form-control" name="desc" id="desc">
+      </div>
+      <div class="mb-3">
+        <select class="selectpicker" data-live-search="true" data-size="5">
+          {% for todo in alltodo %}
+          <option>{{loop.index}}</option>
+          {% endfor %}
+
+
+        </select>
+      </div>
+      <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
+  </div>
+  <div class="container">
+    <h2> Your To-Do List</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered" id="example">
+        <thead>
+          <tr>
+            <th scope="col">
+              S.No
+              <select class="column-filter"  style="width: 11%; display: inline-block;">
+                <option value="">All</option>
+              </select>
+            </th>
+            <th scope="col">Title </th>
+               
+  
+              <th scope="col">Desc</th>
+              <th scope="col">
+                Time
+                <i class="bi bi-filter" onclick="toggleFilterDropdown(this)"></i>
+                <select class="column-filter" style="display: none; width: 5%;">
+                    <option value="">All</option>
+                </select>
+            </th>
+            <th scope="col">Actions</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          {% for todo in alltodo %}
+          <tr>
+            <th scope="row">{{todo.sno}}</th>
+            <td>{{todo.title}}</td>
+            <td>{{todo.decs}}</td>
+            <td>{{todo.date_created}}</td>
+            <td>
+              <a href="javascript:void(0);" onclick="confirmDelete('{{ todo.sno }}')"
+                class="btn btn-outline-danger btn-sm mx-1">Delete</a>
+            </td>
+
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+
+    </div>
+    <!-- jQuery (Make sure this is included first) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Bootstrap-select JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+    <!-- <script>
+     function confirmDelete(sno) {
+      console.log("Hi");
+    // Show SweetAlert for delete confirmation
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            
+            console.log(sno);
+            window.location.href = '/delete/' + sno;
+        }
+    });
+}
+    </script> -->
+
+    <script>
+      $(document).ready(function () {
+        $('#example').DataTable({
+        });
+        // Set Toastr options
+        toastr.options = {
+          "closeButton": true,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": true,
+          "timeOut": "5000"
+        };
+
+        // Read flash messages from hidden HTML elements and display with Toastr
+        $('#flash-messages .flash-message').each(function () {
+          var category = $(this).data('category');  // Get the category (e.g., success, error)
+          var message = $(this).data('message');    // Get the message text
+
+          toastr[category](message);                // Display the message with Toastr
+        });
+
+        var table = $('#example').DataTable();
+
+        // Loop over each column to add unique filter options where the dropdown is present
+        $('#example thead th').each(function (index) {
+            var header = $(this);
+            var select = $('select.column-filter', header);
+
+            if (select.length) { // Only proceed if a filter dropdown is present in the header
+                var column = table.column(index);
+
+                // Populate the filter dropdown with unique values from the column
+                column.data().unique().sort().each(function (d) {
+                    select.append('<option value="' + d + '">' + d + '</option>');
+                });
+
+                // Event listener for filtering on dropdown change
+                select.on('change', function () {
+                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                  
+                });
+            }
+        });
+       
+    });
+
+    
+    </script>
+
+    <!-- Initialize DataTable -->
+
+
+</html>

@@ -1,0 +1,2 @@
+This a way to access static content
+#Redirect to /static/filename to access it 
